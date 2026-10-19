@@ -1,0 +1,7 @@
+# Cosas del sistema y del editor que no pintan nada en el repo
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log

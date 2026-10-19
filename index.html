@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tinta. · Login animado</title>
+  <meta name="description" content="Demo de login y registro con base de datos en el navegador, cambio de tema como mancha de tinta y cambio de idioma. Proyecto de aficionado.">
+  <meta name="theme-color" content="#0b0c10">
+
+  <!-- Pongo el tema y el idioma guardados antes de pintar para que no parpadee -->
+  <script>
+    (function () {
+      var tema = 'oscuro';
+      var idioma = 'es';
+      try {
+        var t = localStorage.getItem('login-animado:tema');
+        if (t === 'claro' || t === 'oscuro') tema = t;
+        else if (window.matchMedia('(prefers-color-scheme: light)').matches) tema = 'claro';
+        var i = localStorage.getItem('login-animado:idioma');
+        if (i === 'es' || i === 'en') idioma = i;
+        else if (navigator.language && navigator.language.slice(0, 2) === 'en') idioma = 'en';
+      } catch (error) { /* sin localStorage uso los valores por defecto */ }
+      var raiz = document.documentElement;
+      raiz.dataset.tema = tema;
+      raiz.lang = idioma;
+    })();
+  </script>
+
+  <link rel="preload" href="fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="saltar" href="#principal" data-i18n="saltar">Saltar al contenido</a>
+
+  <!-- Las gotas de tinta del fondo (se mueven con el ratón) -->
+  <div class="fondo" id="fondo" aria-hidden="true"></div>
+
+  <header class="cabecera">
+    <a class="logo" href="./" aria-label="tinta., inicio">tinta<b>.</b></a>
+    <span class="relleno"></span>
+
+    <div class="idiomas" role="group" aria-label="Idioma" data-i18n-attr="aria-label:grupoIdioma">
+      <button type="button" class="idioma" data-idioma="es" lang="es" aria-pressed="true" title="Español">ES</button>
+      <button type="button" class="idioma" data-idioma="en" lang="en" aria-pressed="false" title="English">EN</button>
+    </div>
+
+    <button type="button" class="boton-icono" id="botonTema" aria-label="Cambiar a tema claro">
+      <svg class="icono icono-luna" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+      <svg class="icono icono-sol" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+    </button>
+  </header>
+
+  <main id="principal" class="principal">
+    <section class="vista" id="vistaAcceso" aria-labelledby="tituloAcceso">
+      <div class="presentacion">
+        <h1 id="tituloAcceso" class="titular" data-i18n="titular">Entra en la tinta.</h1>
+        <p class="bajada" data-i18n="bajada">Una demo de login con base de datos en tu navegador.</p>
+        <p class="nota"><span data-i18n="nota">Demo: los datos se guardan solo en este navegador.</span></p>
+      </div>
+      <div class="muestra">
+        <h2 data-i18n="muestraTitulo">Así se ve el tema</h2>
+        <label class="campo"><span data-i18n="correo">Correo</span><input type="email" autocomplete="off"></label>
+        <button type="button" class="boton"><span data-i18n="entrar">Entrar</span></button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p><span data-i18n="pie">Proyecto de aficionado hecho con HTML, CSS y JavaScript.</span> <a href="https://github.com/danimartin03/login-animado" target="_blank" rel="noopener">GitHub</a></p>
+  </footer>
+
+  <script src="js/tema.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
