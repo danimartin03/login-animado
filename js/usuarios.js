@@ -225,8 +225,16 @@ async function iniciarSesion(datos) {
   }
 
   await borrarObjeto('intentos', correo);
+  return abrirSesionNueva(usuario.id, !!datos.recordar);
+}
+
+// Abro una sesión de un usuario que ya está comprobado (lo uso al entrar y justo después de registrarse,
+// que así no hace falta volver a calcular el hash de la contraseña)
+async function abrirSesionNueva(usuarioId, recordar) {
+  const usuario = await leerUsuarioCompleto(usuarioId);
+  if (!usuario) return { ok: false, error: 'NO_EXISTE' };
   await registrarAcceso(usuario);
-  const sesion = await crearSesion(usuario.id, !!datos.recordar);
+  const sesion = await crearSesion(usuario.id, recordar);
   return { ok: true, usuario: usuarioPublico(usuario), sesion: sesion };
 }
 

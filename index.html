@@ -51,16 +51,84 @@
   </header>
 
   <main id="principal" class="principal">
+    <noscript><p class="aviso">Esta demo necesita JavaScript. / This demo needs JavaScript.</p></noscript>
+
+    <!-- ACCESO: entrar o registrarse, en una tarjeta que gira -->
     <section class="vista" id="vistaAcceso" aria-labelledby="tituloAcceso">
       <div class="presentacion">
-        <h1 id="tituloAcceso" class="titular" data-i18n="titular">Entra en la tinta.</h1>
+        <h1 id="tituloAcceso" class="titular" tabindex="-1" data-i18n="titular">Entra en la tinta.</h1>
         <p class="bajada" data-i18n="bajada">Una demo de login con base de datos en tu navegador.</p>
-        <p class="nota"><span data-i18n="nota">Demo: los datos se guardan solo en este navegador.</span></p>
+        <p class="nota" data-i18n="nota">Demo: los datos se guardan solo en este navegador.</p>
+        <p class="aviso" id="avisoMemoria" role="status" hidden data-i18n="avisoMemoria"></p>
       </div>
-      <div class="muestra">
-        <h2 data-i18n="muestraTitulo">Así se ve el tema</h2>
-        <label class="campo"><span data-i18n="correo">Correo</span><input type="email" autocomplete="off"></label>
-        <button type="button" class="boton"><span data-i18n="entrar">Entrar</span></button>
+
+      <div class="escena">
+        <div class="giro" id="giro">
+
+          <form class="cara" id="formEntrar" novalidate aria-labelledby="tituloEntrar">
+            <h2 id="tituloEntrar" data-i18n="entrarTitulo">Entrar</h2>
+            <label class="campo">
+              <span data-i18n="correo">Correo</span>
+              <input id="entrarCorreo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
+            </label>
+            <div class="campo">
+              <label for="entrarClave" data-i18n="clave">Contraseña</label>
+              <div class="clave-caja">
+                <input id="entrarClave" type="password" autocomplete="current-password" maxlength="128">
+                <button type="button" class="ojo" data-ojo="entrarClave" aria-pressed="false" aria-label="Mostrar contraseña">
+                  <svg class="icono ojo-abierto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icono ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                </button>
+              </div>
+            </div>
+            <label class="casilla"><input type="checkbox" id="entrarRecordar"><span data-i18n="recordarme">Recordarme en este navegador</span></label>
+            <p class="mensaje" id="mensajeEntrar" role="alert"></p>
+            <button class="boton" type="submit" id="botonEntrar"><span data-i18n="entrar">Entrar</span></button>
+            <button type="button" class="enlace" data-girar data-i18n="irRegistro">¿Sin cuenta? Regístrate</button>
+          </form>
+
+          <form class="cara cara-atras" id="formRegistro" novalidate aria-labelledby="tituloRegistro" inert aria-hidden="true">
+            <h2 id="tituloRegistro" data-i18n="crearTitulo">Crear cuenta</h2>
+            <label class="campo">
+              <span data-i18n="nombre">Nombre</span>
+              <input id="registroNombre" type="text" autocomplete="name" maxlength="40">
+            </label>
+            <label class="campo">
+              <span data-i18n="correo">Correo</span>
+              <input id="registroCorreo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
+            </label>
+            <div class="campo">
+              <label for="registroClave" data-i18n="clave">Contraseña</label>
+              <div class="clave-caja">
+                <input id="registroClave" type="password" autocomplete="new-password" maxlength="128" aria-describedby="ayudaClaveRegistro">
+                <button type="button" class="ojo" data-ojo="registroClave" aria-pressed="false" aria-label="Mostrar contraseña">
+                  <svg class="icono ojo-abierto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="icono ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="fuerza">
+              <span class="vial" aria-hidden="true"><i class="vial-relleno" id="vialRelleno" data-nivel="vacia"></i></span>
+              <div>
+                <p class="fuerza-texto" id="fuerzaTexto" aria-live="polite"></p>
+                <p class="ayuda" id="ayudaClaveRegistro" data-i18n="ayudaClave">Mínimo 8 caracteres.</p>
+              </div>
+            </div>
+            <p class="mensaje" id="mensajeRegistro" role="alert"></p>
+            <button class="boton" type="submit" id="botonCrear"><span data-i18n="crear">Crear cuenta</span></button>
+            <button type="button" class="enlace" data-girar data-i18n="irEntrada">¿Ya tienes cuenta? Entra</button>
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL (de momento solo una bienvenida; el panel de verdad llega en otra fase) -->
+    <section class="vista vista-panel" id="vistaPanel" aria-labelledby="tituloPanel" hidden>
+      <div>
+        <h1 id="tituloPanel" class="titular" tabindex="-1" data-i18n="saludo"></h1>
+        <p class="bajada" data-i18n="provisional"></p>
+        <button type="button" class="boton" id="botonSalir"><span data-i18n="salir">Salir</span></button>
       </div>
     </section>
   </main>
@@ -75,6 +143,8 @@
   <script src="js/bd.js" defer></script>
   <script src="js/usuarios.js" defer></script>
   <script src="js/tema.js" defer></script>
+  <script src="js/fondo.js" defer></script>
+  <script src="js/acceso.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>

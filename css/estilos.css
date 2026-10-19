@@ -23,6 +23,7 @@
   --acento: #ff5a3c;
   --sobre-acento: #0b0c10;
   --error: #ff7a7a;
+  --aviso-medio: #fbbf24;
   --ok: #4ade80;
   color-scheme: dark;
 }
@@ -36,6 +37,7 @@
   --acento: #c92d12;
   --sobre-acento: #ffffff;
   --error: #b42318;
+  --aviso-medio: #b45309;
   --ok: #15803d;
   color-scheme: light;
 }
@@ -245,19 +247,6 @@ a {
   font-size: 0.9rem;
 }
 
-.muestra {
-  display: grid;
-  gap: 0.9rem;
-  padding: 1.25rem;
-  border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  background: var(--superficie);
-}
-
-.muestra h2 {
-  font-size: 1.2rem;
-}
-
 .campo {
   display: grid;
   gap: 0.3rem;
@@ -288,6 +277,255 @@ a {
   transition: transform 160ms var(--suave);
 }
 
+/* ---------- La tarjeta que gira ---------- */
+.presentacion {
+  position: relative;
+  z-index: 2;
+}
+
+.escena {
+  position: relative;
+  z-index: 2;
+  perspective: 1100px;
+}
+
+/* Las dos caras están una encima de otra (misma celda de la rejilla), así la tarjeta
+   siempre mide lo que mide la más alta y no salta al girar */
+.giro {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 700ms var(--movimiento);
+}
+
+.giro.volteado {
+  transform: rotateY(180deg);
+}
+
+.giro.sin-giro,
+.giro.sin-giro .cara {
+  transition: none;
+}
+
+.cara {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: start;
+  gap: 0.85rem;
+  padding: 1.5rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.cara-atras {
+  transform: rotateY(180deg);
+}
+
+.cara h2 {
+  font-size: 1.5rem;
+}
+
+/* ---------- Campos y botones ---------- */
+.campo {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--apagado);
+  font-size: 0.9rem;
+}
+
+.campo input {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--fondo);
+  color: var(--tinta);
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 160ms ease;
+}
+
+.campo input:hover {
+  border-color: var(--apagado);
+}
+
+.campo input[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+.clave-caja {
+  position: relative;
+}
+
+.clave-caja input {
+  padding-right: 3rem;
+}
+
+.ojo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--apagado);
+  cursor: pointer;
+}
+
+.ojo:hover {
+  color: var(--tinta);
+}
+
+.ojo-cerrado,
+.ojo[aria-pressed='true'] .ojo-abierto {
+  display: none;
+}
+
+.ojo[aria-pressed='true'] .ojo-cerrado {
+  display: block;
+}
+
+.casilla {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--apagado);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.casilla input {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: var(--acento);
+}
+
+.mensaje {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--error);
+  font-size: 0.92rem;
+}
+
+.enlace {
+  min-height: 2.75rem;
+  border: 0;
+  background: none;
+  color: var(--apagado);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.enlace:hover {
+  color: var(--tinta);
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.ayuda {
+  margin: 0;
+  color: var(--apagado);
+  font-size: 0.85rem;
+}
+
+.aviso {
+  display: inline-block;
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--acento);
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* ---------- El vial de tinta (mide la contraseña) ---------- */
+.fuerza {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.fuerza-texto {
+  margin: 0;
+  font-weight: 600;
+}
+
+.vial {
+  position: relative;
+  flex: none;
+  width: 1rem;
+  height: 3.4rem;
+  border: 2px solid var(--borde);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.vial-relleno {
+  position: absolute;
+  inset: auto 0 0;
+  height: 0;
+  background: var(--error);
+  transition: height 350ms var(--suave), background-color 350ms ease;
+}
+
+.vial-relleno[data-nivel='debil'] {
+  height: 33%;
+  background: var(--error);
+}
+
+.vial-relleno[data-nivel='media'] {
+  height: 66%;
+  background: var(--aviso-medio);
+}
+
+.vial-relleno[data-nivel='fuerte'] {
+  height: 100%;
+  background: var(--ok);
+}
+
+/* ---------- Entrada de una pantalla, confeti y panel ---------- */
+.vista.entra {
+  animation: entrada-vista 320ms var(--suave) both;
+}
+
+@keyframes entrada-vista {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.99);
+  }
+}
+
+.confeti {
+  position: fixed;
+  z-index: 60;
+  width: 0.5rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.vista-panel {
+  grid-template-columns: 1fr;
+}
+
+/* Los campos nunca se pueden enfocar si su cara está oculta (lo hace el atributo inert),
+   y la cara de atrás no debe recibir clics mientras está girada */
+.cara[inert] {
+  pointer-events: none;
+}
+
 /* ---------- Pie ---------- */
 .pie {
   position: relative;
@@ -312,6 +550,21 @@ a {
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+.gota {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: var(--acento);
+  opacity: 0.2;
+  filter: blur(70px);
+  will-change: transform;
+}
+
+[data-tema='claro'] .gota {
+  opacity: 0.14;
 }
 
 /* ---------- Cambio de tema: la mancha de tinta ---------- */

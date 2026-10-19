@@ -67,9 +67,19 @@ function aplicarAtributos(raiz) {
   }
 }
 
+// Si un texto lleva variables (como el nombre), las leo de data-i18n-vars='{"nombre":"Ana"}'
+function variablesDe(elemento) {
+  if (!elemento.dataset.i18nVars) return undefined;
+  try {
+    return JSON.parse(elemento.dataset.i18nVars);
+  } catch (error) {
+    return undefined;
+  }
+}
+
 function aplicarTextos(raiz, conEfecto) {
   for (const elemento of raiz.querySelectorAll('[data-i18n]')) {
-    const texto = textoDe(elemento.dataset.i18n);
+    const texto = textoDe(elemento.dataset.i18n, variablesDe(elemento));
     if (conEfecto) escribirConEfecto(elemento, texto);
     else elemento.textContent = texto;
   }
