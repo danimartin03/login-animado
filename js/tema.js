@@ -110,6 +110,8 @@ async function cambiarTema(boton) {
 
 function iniciarTema() {
   ponerTema(temaActual());
+  // Al cambiar de idioma hay que volver a escribir la etiqueta del botón
+  document.addEventListener('idiomacambiado', function () { ponerTema(temaActual()); });
   const boton = document.getElementById('botonTema');
   let ocupado = false;
   boton.addEventListener('click', async function () {
