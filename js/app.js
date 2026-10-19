@@ -61,19 +61,22 @@ function mostrarVista(nombre, moverFoco) {
   if (moverFoco) mostrada.querySelector('h1').focus({ preventScroll: true });
 }
 
-function ponerNombreEnElPanel(nombre) {
-  const titulo = porId('tituloPanel');
-  titulo.dataset.i18nVars = JSON.stringify({ nombre: nombre });
-  titulo.textContent = textoDe('saludo', { nombre: nombre });
-}
-
 // La llama acceso.js cuando alguien entra (o se registra) bien
-function alEntrar(usuario, sesion) {
-  usuarioActual = usuario;
+async function alEntrar(usuario, sesion) {
   fichaActual = sesion.token;
   guardarFicha(sesion);
-  ponerNombreEnElPanel(usuario.nombre);
+  porId('avisoEliminada').hidden = true;
+  await abrirPanel(usuario);
   mostrarVista('panel', true);
+}
+
+// Dejo la página como al principio (sin usuario y con el acceso a la vista)
+function terminarSesionLocal() {
+  borrarFicha();
+  usuarioActual = null;
+  fichaActual = '';
+  reiniciarAcceso();
+  mostrarVista('acceso', true);
 }
 
 async function salir() {
@@ -82,11 +85,7 @@ async function salir() {
   } catch (error) {
     // Aunque falle el borrado, la ficha se quita de este navegador
   }
-  borrarFicha();
-  usuarioActual = null;
-  fichaActual = '';
-  reiniciarAcceso();
-  mostrarVista('acceso', true);
+  terminarSesionLocal();
 }
 
 async function arrancar() {
@@ -94,6 +93,8 @@ async function arrancar() {
   iniciarTema();
   iniciarFondo();
   iniciarAcceso();
+  iniciarPanel();
+  iniciarPaleta();
   porId('botonSalir').addEventListener('click', salir);
 
   // Si hay una ficha guardada, no enseño el acceso mientras compruebo que sigue valiendo
@@ -106,9 +107,8 @@ async function arrancar() {
     if (ficha) {
       const sesion = await usuarioDeSesion(ficha);
       if (sesion) {
-        usuarioActual = sesion.usuario;
         fichaActual = ficha;
-        ponerNombreEnElPanel(sesion.usuario.nombre);
+        await abrirPanel(sesion.usuario);
         mostrarVista('panel', false);
         return;
       }

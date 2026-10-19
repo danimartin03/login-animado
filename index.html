@@ -60,6 +60,7 @@
         <p class="bajada" data-i18n="bajada">Una demo de login con base de datos en tu navegador.</p>
         <p class="nota" data-i18n="nota">Demo: los datos se guardan solo en este navegador.</p>
         <p class="aviso" id="avisoMemoria" role="status" hidden data-i18n="avisoMemoria"></p>
+        <p class="aviso aviso-ok" id="avisoEliminada" role="status" hidden data-i18n="cuentaEliminada"></p>
       </div>
 
       <div class="escena">
@@ -123,12 +124,123 @@
       </div>
     </section>
 
-    <!-- PANEL (de momento solo una bienvenida; el panel de verdad llega en otra fase) -->
+    <!-- PANEL: resumen, notas y perfil -->
     <section class="vista vista-panel" id="vistaPanel" aria-labelledby="tituloPanel" hidden>
-      <div>
-        <h1 id="tituloPanel" class="titular" tabindex="-1" data-i18n="saludo"></h1>
-        <p class="bajada" data-i18n="provisional"></p>
-        <button type="button" class="boton" id="botonSalir"><span data-i18n="salir">Salir</span></button>
+      <div class="panel">
+        <aside class="panel-lateral">
+          <div class="panel-usuario">
+            <span class="avatar" id="avatar" aria-hidden="true"></span>
+            <div class="panel-usuario-texto">
+              <strong id="usuarioNombre"></strong>
+              <span id="usuarioCorreo"></span>
+            </div>
+          </div>
+          <nav class="panel-nav" aria-label="Secciones del panel" data-i18n-attr="aria-label:navPanel">
+            <button type="button" class="nav-boton" data-seccion="resumen" aria-current="page">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+              <span data-i18n="navResumen">Resumen</span>
+            </button>
+            <button type="button" class="nav-boton" data-seccion="notas">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14v16H5zM9 9h6M9 13h6M9 17h3"/></svg>
+              <span data-i18n="navNotas">Notas</span>
+            </button>
+            <button type="button" class="nav-boton" data-seccion="perfil">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              <span data-i18n="navPerfil">Perfil</span>
+            </button>
+            <button type="button" class="nav-boton nav-buscar" id="botonPaleta" aria-haspopup="dialog">
+              <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+              <span data-i18n="buscar">Buscar</span> <kbd>Ctrl K</kbd>
+            </button>
+          </nav>
+          <button type="button" class="enlace panel-salir" id="botonSalir"><span data-i18n="salir">Salir</span></button>
+        </aside>
+
+        <div class="panel-contenido">
+          <h1 id="tituloPanel" class="panel-titulo" tabindex="-1" data-i18n="saludo"></h1>
+
+          <!-- RESUMEN -->
+          <section class="panel-seccion" id="seccionResumen" aria-label="Resumen" data-i18n-attr="aria-label:navResumen">
+            <div class="estadisticas" id="estadisticas"></div>
+            <div class="tarjeta grafica">
+              <h2 data-i18n="actividad">Actividad de los últimos 7 días</h2>
+              <svg class="grafica-svg" id="graficaSvg" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" focusable="false">
+                <path id="graficaTrazo" d=""/>
+              </svg>
+              <div class="grafica-dias" id="graficaDias" aria-hidden="true"></div>
+            </div>
+            <div class="tarjeta">
+              <h2 data-i18n="recientes">Notas recientes</h2>
+              <ul class="lista-simple" id="listaRecientes"></ul>
+              <p class="ayuda" id="sinRecientes" data-i18n="sinRecientes" hidden></p>
+            </div>
+          </section>
+
+          <!-- NOTAS -->
+          <section class="panel-seccion" id="seccionNotas" aria-label="Notas" data-i18n-attr="aria-label:navNotas" hidden>
+            <form class="nota-nueva" id="formNota" novalidate>
+              <label class="campo nota-campo">
+                <span data-i18n="notaEtiqueta">Nueva nota o tarea</span>
+                <input id="campoNota" type="text" maxlength="200" autocomplete="off" data-i18n-attr="placeholder:notaMarcador" placeholder="Escribe algo y pulsa Intro…">
+              </label>
+              <button class="boton" type="submit"><span data-i18n="anadir">Añadir</span></button>
+            </form>
+            <p class="mensaje" id="mensajeNota" role="alert"></p>
+            <div class="notas-barra">
+              <fieldset class="filtro">
+                <legend class="solo-lectores" data-i18n="filtroGrupo">Qué notas ver</legend>
+                <label><input type="radio" name="filtroNotas" value="todas" checked><span data-i18n="filtroTodas">Todas</span></label>
+                <label><input type="radio" name="filtroNotas" value="pendientes"><span data-i18n="filtroPendientes">Pendientes</span></label>
+                <label><input type="radio" name="filtroNotas" value="hechas"><span data-i18n="filtroHechas">Hechas</span></label>
+              </fieldset>
+              <p class="ayuda" id="contadorNotas"></p>
+            </div>
+            <ul class="lista-notas" id="listaNotas"></ul>
+            <p class="ayuda" id="vacioNotas" hidden></p>
+          </section>
+
+          <!-- PERFIL -->
+          <section class="panel-seccion" id="seccionPerfil" aria-label="Perfil" data-i18n-attr="aria-label:navPerfil" hidden>
+            <form class="tarjeta formulario-perfil" id="formPerfil" novalidate>
+              <h2 data-i18n="perfilTitulo">Tu perfil</h2>
+              <label class="campo">
+                <span data-i18n="perfilNombre">Nombre</span>
+                <input id="perfilNombre" type="text" maxlength="40" autocomplete="name">
+              </label>
+              <fieldset class="colores">
+                <legend data-i18n="colorAvatar">Color del avatar</legend>
+                <div class="colores-lista" id="listaColores"></div>
+              </fieldset>
+              <p class="mensaje" id="mensajePerfil" role="alert"></p>
+              <button class="boton" type="submit"><span data-i18n="guardar">Guardar cambios</span></button>
+            </form>
+
+            <form class="tarjeta formulario-perfil" id="formClave" novalidate>
+              <h2 data-i18n="claveTitulo">Cambiar contraseña</h2>
+              <label class="campo">
+                <span data-i18n="claveActual">Contraseña actual</span>
+                <input id="claveActual" type="password" maxlength="128" autocomplete="current-password">
+              </label>
+              <label class="campo">
+                <span data-i18n="claveNueva">Contraseña nueva</span>
+                <input id="claveNueva" type="password" maxlength="128" autocomplete="new-password">
+              </label>
+              <p class="mensaje" id="mensajeClave" role="alert"></p>
+              <button class="boton" type="submit"><span data-i18n="cambiarClave">Cambiar contraseña</span></button>
+            </form>
+
+            <form class="tarjeta formulario-perfil zona-peligro" id="formEliminar" novalidate>
+              <h2 data-i18n="peligroTitulo">Eliminar cuenta</h2>
+              <p class="ayuda" data-i18n="peligroTexto"></p>
+              <label class="campo">
+                <span data-i18n="confirmarClave">Escribe tu contraseña para confirmar</span>
+                <input id="claveEliminar" type="password" maxlength="128" autocomplete="current-password">
+              </label>
+              <p class="mensaje" id="mensajeEliminar" role="alert"></p>
+              <button class="boton boton-peligro" type="submit"><span data-i18n="eliminar">Eliminar cuenta</span></button>
+            </form>
+          </section>
+        </div>
       </div>
     </section>
   </main>
@@ -136,6 +248,13 @@
   <footer class="pie">
     <p><span data-i18n="pie">Proyecto de aficionado hecho con HTML, CSS y JavaScript.</span> <a href="https://github.com/danimartin03/login-animado" target="_blank" rel="noopener">GitHub</a></p>
   </footer>
+
+  <dialog id="paleta" class="paleta" aria-labelledby="tituloPaleta">
+    <h2 id="tituloPaleta" class="solo-lectores" data-i18n="paletaTitulo">Buscar una acción</h2>
+    <input id="paletaCampo" class="paleta-campo" type="text" role="combobox" aria-expanded="true" aria-controls="paletaLista" aria-autocomplete="list" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:paletaMarcador;aria-label:paletaTitulo" placeholder="Escribe para buscar…">
+    <ul id="paletaLista" class="paleta-lista" role="listbox"></ul>
+    <p id="paletaVacia" class="ayuda paleta-vacia" data-i18n="paletaVacia" hidden>Nada coincide.</p>
+  </dialog>
 
   <script src="js/textos.js" defer></script>
   <script src="js/idioma.js" defer></script>
@@ -145,6 +264,8 @@
   <script src="js/tema.js" defer></script>
   <script src="js/fondo.js" defer></script>
   <script src="js/acceso.js" defer></script>
+  <script src="js/panel.js" defer></script>
+  <script src="js/paleta.js" defer></script>
   <script src="js/app.js" defer></script>
 </body>
 </html>

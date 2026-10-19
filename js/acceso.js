@@ -256,7 +256,10 @@ function iniciarAcceso() {
   porId('registroClave').addEventListener('input', actualizarVial);
   // Al escribir se quita el mensaje de error: ya no vale
   for (const formulario of [porId('formEntrar'), porId('formRegistro')]) {
-    formulario.addEventListener('input', function () { quitarMensaje(formulario); });
+    formulario.addEventListener('input', function () {
+      quitarMensaje(formulario);
+      porId('avisoEliminada').hidden = true;
+    });
   }
   document.addEventListener('idiomacambiado', function () {
     for (const boton of document.querySelectorAll('.ojo')) etiquetaDelOjo(boton);

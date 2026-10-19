@@ -517,13 +517,515 @@ a {
 }
 
 .vista-panel {
-  grid-template-columns: 1fr;
+  display: block;
+  min-height: 0;
+}
+
+.vista-panel[hidden] {
+  display: none;
 }
 
 /* Los campos nunca se pueden enfocar si su cara está oculta (lo hace el atributo inert),
    y la cara de atrás no debe recibir clics mientras está girada */
 .cara[inert] {
   pointer-events: none;
+}
+
+/* ---------- El panel ---------- */
+.panel {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1.5rem;
+  max-width: 70rem;
+  margin-inline: auto;
+}
+
+.panel-lateral {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.panel-usuario {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  color: #0b0c10;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.panel-usuario-texto {
+  display: grid;
+  min-width: 0;
+}
+
+.panel-usuario-texto strong,
+.panel-usuario-texto span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-usuario-texto span {
+  color: var(--apagado);
+  font-size: 0.85rem;
+}
+
+.panel-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.nav-boton {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 99px;
+  background: transparent;
+  color: var(--apagado);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-boton:hover {
+  color: var(--tinta);
+}
+
+.nav-boton[aria-current='page'] {
+  border-color: var(--borde);
+  background: var(--superficie);
+  color: var(--tinta);
+}
+
+.nav-boton kbd {
+  margin-left: auto;
+  padding: 0 0.4rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  color: var(--apagado);
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.panel-salir {
+  justify-self: start;
+  padding: 0;
+}
+
+.panel-titulo {
+  margin-bottom: 1.25rem;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+.panel-titulo:focus {
+  outline: none;
+}
+
+.panel-seccion {
+  display: grid;
+  gap: 1rem;
+}
+
+.panel-seccion:focus {
+  outline: none;
+}
+
+.entra-seccion {
+  animation: entrada-vista 240ms var(--suave) both;
+}
+
+.tarjeta {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  padding: 1.1rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+
+.tarjeta h2 {
+  font-size: 1.1rem;
+}
+
+.estadisticas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.estadistica {
+  gap: 0.2rem;
+}
+
+.estadistica span {
+  color: var(--apagado);
+  font-size: 0.85rem;
+}
+
+.estadistica strong {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.grafica-svg {
+  display: block;
+  width: 100%;
+  height: 7rem;
+  overflow: visible;
+}
+
+.grafica-svg path {
+  fill: none;
+  stroke: var(--acento);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.grafica-dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  color: var(--apagado);
+  font-size: 0.78rem;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.lista-simple {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-simple li {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista-simple li.hecha,
+.nota.hecha .nota-texto {
+  color: var(--apagado);
+  text-decoration: line-through;
+}
+
+/* ---------- Notas ---------- */
+.nota-nueva {
+  display: flex;
+  gap: 0.6rem;
+  align-items: end;
+}
+
+.nota-campo {
+  flex: 1;
+}
+
+.notas-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filtro label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filtro input,
+.nota-etiqueta input,
+.colores input {
+  accent-color: var(--acento);
+}
+
+.filtro input {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.lista-notas {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nota {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem 0.35rem 0.9rem;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  background: var(--superficie);
+  animation: nota-entra 280ms var(--suave) both;
+  animation-delay: calc(var(--orden, 0) * 35ms);
+  transition: transform 200ms var(--suave), opacity 200ms ease;
+}
+
+.nota.nueva {
+  animation-delay: 0ms;
+}
+
+.nota.sale {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+@keyframes nota-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.nota-etiqueta {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.nota-etiqueta input {
+  flex: none;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.nota-texto {
+  overflow-wrap: anywhere;
+  transition: color 200ms ease;
+}
+
+.nota-borrar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--apagado);
+  cursor: pointer;
+}
+
+.nota-borrar:hover {
+  color: var(--error);
+}
+
+/* ---------- Perfil ---------- */
+.formulario-perfil {
+  max-width: 28rem;
+}
+
+.formulario-perfil .boton {
+  justify-self: start;
+}
+
+.colores {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.colores legend {
+  margin-bottom: 0.4rem;
+  color: var(--apagado);
+  font-size: 0.9rem;
+}
+
+.colores-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.color {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.color input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.color-muestra {
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  transition: box-shadow 160ms var(--suave), transform 160ms var(--suave);
+}
+
+.color input:checked + .color-muestra {
+  box-shadow: 0 0 0 3px var(--superficie), 0 0 0 5px var(--tinta);
+}
+
+.color input:focus-visible + .color-muestra {
+  outline: 3px solid var(--acento);
+  outline-offset: 5px;
+}
+
+.mensaje-ok {
+  color: var(--ok);
+}
+
+.aviso-ok {
+  border-color: var(--ok);
+}
+
+.zona-peligro {
+  border-color: var(--error);
+}
+
+.boton-peligro {
+  background: var(--error);
+  color: var(--fondo);
+}
+
+/* ---------- La paleta de acciones (Ctrl+K) ---------- */
+.paleta {
+  width: min(32rem, 92vw);
+  margin: 12vh auto auto;
+  padding: 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  color: var(--tinta);
+}
+
+.paleta::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.paleta-campo {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--borde);
+  background: transparent;
+  color: var(--tinta);
+  font: inherit;
+  font-size: 1.05rem;
+}
+
+.paleta-campo:focus-visible {
+  outline: none;
+}
+
+.paleta-lista {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paleta-accion {
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.paleta-accion[aria-selected='true'] {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
+
+.paleta-vacia {
+  padding: 0.65rem 0.9rem;
+}
+
+@media (min-width: 52rem) {
+  .panel {
+    grid-template-columns: 15rem 1fr;
+    gap: 2.5rem;
+  }
+
+  .panel-nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .nav-boton {
+    border-radius: 12px;
+  }
+
+  .estadisticas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .panel-seccion#seccionResumen {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #seccionResumen > * {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 30rem) {
+  .nota-nueva {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-buscar kbd {
+    display: none;
+  }
 }
 
 /* ---------- Pie ---------- */
