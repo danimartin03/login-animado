@@ -9,6 +9,9 @@ let seccionDelPanel = 'resumen';
 let filtroDeNotas = 'todas';
 let notasDelUsuario = [];
 let temporizadorDeMensaje = null;
+// La última nota borrada, por si se pulsa "Deshacer", y el temporizador que quita el aviso
+let notaBorradaReciente = null;
+let temporizadorDeDeshacer = null;
 
 // En los formularios del panel solo se pide la contraseña, así que el error de "credenciales"
 // se dice como "contraseña incorrecta"
@@ -24,8 +27,20 @@ function panelVisible() {
 // ---------- Datos de la persona (avatar, nombre, saludo) ----------
 
 // Las iniciales: la primera letra de las dos primeras palabras (Array.from para no partir letras raras)
+function primeraLetra(palabra) {
+  // Intl.Segmenter separa "letras" de verdad: un emoji compuesto (👨‍👩‍👧) cuenta como una sola, no se parte
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+    const primero = new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(palabra)[Symbol.iterator]().next();
+    return primero.done ? '' : primero.value.segment.toUpperCase();
+  }
+  return Array.from(palabra)[0].toUpperCase();
+}
+
 function inicialesDe(nombre) {
-  return nombre.split(' ').filter(Boolean).slice(0, 2).map(function (palabra) { return Array.from(palabra)[0].toUpperCase(); }).join('');
+  const letras = nombre.split(' ').filter(Boolean).slice(0, 2).map(primeraLetra);
+  // Si empieza por un emoji, solo pongo ese: dos emojis o un emoji y una letra no caben en el círculo
+  if (letras.length > 0 && /\p{Extended_Pictographic}/u.test(letras[0])) return letras[0];
+  return letras.join('');
 }
 
 function ponerDatosDeUsuario(usuario) {
@@ -34,6 +49,9 @@ function ponerDatosDeUsuario(usuario) {
   avatar.style.background = usuario.color;
   porId('usuarioNombre').textContent = usuario.nombre;
   porId('usuarioCorreo').textContent = usuario.correo;
+  // Si el nombre o el correo se cortan con "…", al pasar el ratón se ven enteros
+  porId('usuarioNombre').title = usuario.nombre;
+  porId('usuarioCorreo').title = usuario.correo;
   const saludo = porId('tituloPanel');
   saludo.dataset.i18nVars = JSON.stringify({ nombre: usuario.nombre });
   saludo.textContent = textoDe('saludo', { nombre: usuario.nombre });
@@ -289,9 +307,38 @@ async function alPulsarBorrar(evento) {
     elemento.classList.remove('sale');
     return;
   }
+  notaBorradaReciente = notasDelUsuario.find(function (nota) { return nota.id === id; });
   notasDelUsuario = notasDelUsuario.filter(function (nota) { return nota.id !== id; });
   pintarNotas();
+  ofrecerDeshacer();
   porId('campoNota').focus();
+}
+
+// Borrar no es instantáneo del todo: durante unos segundos se puede deshacer
+function ofrecerDeshacer() {
+  porId('avisoDeshacer').hidden = false;
+  clearTimeout(temporizadorDeDeshacer);
+  temporizadorDeDeshacer = setTimeout(quitarDeshacer, 6000);
+}
+
+function quitarDeshacer() {
+  clearTimeout(temporizadorDeDeshacer);
+  porId('avisoDeshacer').hidden = true;
+  notaBorradaReciente = null;
+}
+
+async function alPulsarDeshacer() {
+  const nota = notaBorradaReciente;
+  quitarDeshacer();
+  if (!nota) return;
+  const resultado = await restaurarNota(usuarioActual.id, nota);
+  if (!resultado.ok) return;
+  // La nota vuelve a su sitio (las más nuevas van arriba)
+  notasDelUsuario.push(resultado.nota);
+  notasDelUsuario.sort(function (a, b) { return b.creada - a.creada; });
+  pintarNotas(resultado.nota.id);
+  const casilla = porId('listaNotas').querySelector('.nota[data-id="' + resultado.nota.id + '"] input');
+  if (casilla) casilla.focus();
 }
 
 // ---------- Perfil ----------
@@ -388,6 +435,7 @@ async function abrirPanel(usuario) {
   ponerDatosDeUsuario(usuario);
   for (const id of ['mensajeNota', 'mensajePerfil', 'mensajeClave', 'mensajeEliminar']) limpiarMensajeDePanel(id);
   for (const formulario of ['formClave', 'formEliminar']) porId(formulario).reset();
+  quitarDeshacer();
   filtroDeNotas = 'todas';
   document.querySelector('input[name="filtroNotas"][value="todas"]').checked = true;
   await cargarNotas();
@@ -416,6 +464,7 @@ function iniciarPanel() {
   });
   porId('listaNotas').addEventListener('change', alCambiarCasilla);
   porId('listaNotas').addEventListener('click', alPulsarBorrar);
+  porId('botonDeshacer').addEventListener('click', alPulsarDeshacer);
   for (const radio of document.querySelectorAll('input[name="filtroNotas"]')) {
     radio.addEventListener('change', function () {
       filtroDeNotas = radio.value;

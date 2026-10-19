@@ -6,6 +6,7 @@
   <title>tinta. · Login animado</title>
   <meta name="description" content="Demo de login y registro con base de datos en el navegador, cambio de tema como mancha de tinta y cambio de idioma. Proyecto de aficionado.">
   <meta name="theme-color" content="#0b0c10">
+  <meta name="color-scheme" content="dark light">
 
   <!-- Pongo el tema y el idioma guardados antes de pintar para que no parpadee -->
   <script>
@@ -36,7 +37,7 @@
   <div class="fondo" id="fondo" aria-hidden="true"></div>
 
   <header class="cabecera">
-    <a class="logo" href="./" aria-label="tinta., inicio" data-i18n-attr="aria-label:logoInicio">tinta<b>.</b></a>
+    <a class="logo" translate="no" href="./" aria-label="tinta., inicio" data-i18n-attr="aria-label:logoInicio">tinta<b>.</b></a>
     <span class="relleno"></span>
 
     <div class="idiomas" role="group" aria-label="Idioma" data-i18n-attr="aria-label:grupoIdioma">
@@ -70,19 +71,19 @@
             <h2 id="tituloEntrar" data-i18n="entrarTitulo">Entrar</h2>
             <label class="campo">
               <span data-i18n="correo">Correo</span>
-              <input id="entrarCorreo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
+              <input id="entrarCorreo" name="correo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
             </label>
             <div class="campo">
               <label for="entrarClave" data-i18n="clave">Contraseña</label>
               <div class="clave-caja">
-                <input id="entrarClave" type="password" autocomplete="current-password" maxlength="128">
+                <input id="entrarClave" name="clave" type="password" autocomplete="current-password" maxlength="128">
                 <button type="button" class="ojo" data-ojo="entrarClave" aria-pressed="false" aria-label="Mostrar contraseña">
                   <svg class="icono ojo-abierto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
                   <svg class="icono ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
                 </button>
               </div>
             </div>
-            <label class="casilla"><input type="checkbox" id="entrarRecordar"><span data-i18n="recordarme">Recordarme en este navegador</span></label>
+            <label class="casilla"><input type="checkbox" id="entrarRecordar" name="recordar"><span data-i18n="recordarme">Recordarme en este navegador</span></label>
             <p class="mensaje" id="mensajeEntrar" role="alert"></p>
             <button class="boton" type="submit" id="botonEntrar"><span data-i18n="entrar">Entrar</span></button>
             <button type="button" class="enlace" data-girar data-i18n="irRegistro">¿Sin cuenta? Regístrate</button>
@@ -92,16 +93,16 @@
             <h2 id="tituloRegistro" data-i18n="crearTitulo">Crear cuenta</h2>
             <label class="campo">
               <span data-i18n="nombre">Nombre</span>
-              <input id="registroNombre" type="text" autocomplete="name" maxlength="40">
+              <input id="registroNombre" name="nombre" type="text" autocomplete="name" maxlength="40">
             </label>
             <label class="campo">
               <span data-i18n="correo">Correo</span>
-              <input id="registroCorreo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
+              <input id="registroCorreo" name="correo" type="email" autocomplete="username" maxlength="120" inputmode="email" autocapitalize="off" spellcheck="false">
             </label>
             <div class="campo">
               <label for="registroClave" data-i18n="clave">Contraseña</label>
               <div class="clave-caja">
-                <input id="registroClave" type="password" autocomplete="new-password" maxlength="128" aria-describedby="ayudaClaveRegistro">
+                <input id="registroClave" name="clave" type="password" autocomplete="new-password" maxlength="128" aria-describedby="ayudaClaveRegistro">
                 <button type="button" class="ojo" data-ojo="registroClave" aria-pressed="false" aria-label="Mostrar contraseña">
                   <svg class="icono ojo-abierto" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
                   <svg class="icono ojo-cerrado" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4M6.5 6.6A17 17 0 0 0 2 12s3.6 7 10 7a9.6 9.6 0 0 0 4.2-1M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
@@ -150,7 +151,7 @@
             </button>
             <button type="button" class="nav-boton nav-buscar" id="botonPaleta" aria-haspopup="dialog">
               <svg class="icono" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
-              <span data-i18n="buscar">Buscar</span> <kbd>Ctrl K</kbd>
+              <span data-i18n="buscar">Buscar</span> <kbd>Ctrl&nbsp;K</kbd>
             </button>
           </nav>
           <button type="button" class="enlace panel-salir" id="botonSalir"><span data-i18n="salir">Salir</span></button>
@@ -181,7 +182,7 @@
             <form class="nota-nueva" id="formNota" novalidate>
               <label class="campo nota-campo">
                 <span data-i18n="notaEtiqueta">Nueva nota o tarea</span>
-                <input id="campoNota" type="text" maxlength="200" autocomplete="off" data-i18n-attr="placeholder:notaMarcador" placeholder="Escribe algo y pulsa Intro…">
+                <input id="campoNota" name="nota" type="text" maxlength="200" autocomplete="off" data-i18n-attr="placeholder:notaMarcador" placeholder="Escribe algo y pulsa Intro…">
               </label>
               <button class="boton" type="submit"><span data-i18n="anadir">Añadir</span></button>
             </form>
@@ -195,6 +196,10 @@
               </fieldset>
               <p class="ayuda" id="contadorNotas"></p>
             </div>
+            <p class="aviso-deshacer" id="avisoDeshacer" role="status" hidden>
+              <span data-i18n="notaBorrada">Nota borrada.</span>
+              <button type="button" class="enlace" id="botonDeshacer" data-i18n="deshacer">Deshacer</button>
+            </p>
             <ul class="lista-notas" id="listaNotas"></ul>
             <p class="ayuda" id="vacioNotas" hidden></p>
           </section>
@@ -205,7 +210,7 @@
               <h2 data-i18n="perfilTitulo">Tu perfil</h2>
               <label class="campo">
                 <span data-i18n="perfilNombre">Nombre</span>
-                <input id="perfilNombre" type="text" maxlength="40" autocomplete="name">
+                <input id="perfilNombre" name="nombre" type="text" maxlength="40" autocomplete="name">
               </label>
               <fieldset class="colores">
                 <legend data-i18n="colorAvatar">Color del avatar</legend>
@@ -219,11 +224,11 @@
               <h2 data-i18n="claveTitulo">Cambiar contraseña</h2>
               <label class="campo">
                 <span data-i18n="claveActual">Contraseña actual</span>
-                <input id="claveActual" type="password" maxlength="128" autocomplete="current-password">
+                <input id="claveActual" name="claveActual" type="password" maxlength="128" autocomplete="current-password">
               </label>
               <label class="campo">
                 <span data-i18n="claveNueva">Contraseña nueva</span>
-                <input id="claveNueva" type="password" maxlength="128" autocomplete="new-password">
+                <input id="claveNueva" name="claveNueva" type="password" maxlength="128" autocomplete="new-password">
               </label>
               <p class="mensaje" id="mensajeClave" role="alert"></p>
               <button class="boton" type="submit"><span data-i18n="cambiarClave">Cambiar contraseña</span></button>
@@ -234,7 +239,7 @@
               <p class="ayuda" data-i18n="peligroTexto"></p>
               <label class="campo">
                 <span data-i18n="confirmarClave">Escribe tu contraseña para confirmar</span>
-                <input id="claveEliminar" type="password" maxlength="128" autocomplete="current-password">
+                <input id="claveEliminar" name="clave" type="password" maxlength="128" autocomplete="current-password">
               </label>
               <p class="mensaje" id="mensajeEliminar" role="alert"></p>
               <button class="boton boton-peligro" type="submit"><span data-i18n="eliminar">Eliminar cuenta</span></button>
@@ -251,7 +256,7 @@
 
   <dialog id="paleta" class="paleta" aria-labelledby="tituloPaleta">
     <h2 id="tituloPaleta" class="solo-lectores" data-i18n="paletaTitulo">Buscar una acción</h2>
-    <input id="paletaCampo" class="paleta-campo" type="text" role="combobox" aria-expanded="true" aria-controls="paletaLista" aria-autocomplete="list" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:paletaMarcador;aria-label:paletaTitulo" placeholder="Escribe para buscar…">
+    <input id="paletaCampo" name="accion" class="paleta-campo" type="text" role="combobox" aria-expanded="true" aria-controls="paletaLista" aria-autocomplete="list" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:paletaMarcador;aria-label:paletaTitulo" placeholder="Escribe para buscar…">
     <ul id="paletaLista" class="paleta-lista" role="listbox"></ul>
     <p id="paletaVacia" class="ayuda paleta-vacia" data-i18n="paletaVacia" hidden>Nada coincide.</p>
   </dialog>

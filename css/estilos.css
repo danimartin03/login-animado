@@ -51,6 +51,16 @@
 
 html {
   background: var(--fondo);
+  /* Sin el destello gris al tocar en el móvil: ya hay un efecto propio al pulsar */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Evita el retraso de doble toque en el móvil */
+a,
+button,
+input,
+label {
+  touch-action: manipulation;
 }
 
 body {
@@ -69,6 +79,7 @@ h1,
 h2,
 h3 {
   margin: 0;
+  text-wrap: balance;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -472,26 +483,28 @@ a {
   overflow: hidden;
 }
 
+/* El tubo se llena con transform (más barato de animar que la altura) */
 .vial-relleno {
   position: absolute;
-  inset: auto 0 0;
-  height: 0;
+  inset: 0;
   background: var(--error);
-  transition: height 350ms var(--suave), background-color 350ms ease;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 350ms var(--suave), background-color 350ms ease;
 }
 
 .vial-relleno[data-nivel='debil'] {
-  height: 33%;
+  transform: scaleY(0.33);
   background: var(--error);
 }
 
 .vial-relleno[data-nivel='media'] {
-  height: 66%;
+  transform: scaleY(0.66);
   background: var(--aviso-medio);
 }
 
 .vial-relleno[data-nivel='fuerte'] {
-  height: 100%;
+  transform: scaleY(1);
   background: var(--ok);
 }
 
@@ -791,7 +804,10 @@ a {
   list-style: none;
 }
 
+/* Con muchas notas, el navegador no pinta las que no se ven (hasta 200) */
 .nota {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 3.6rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -946,6 +962,10 @@ a {
   color: var(--tinta);
 }
 
+.paleta {
+  overscroll-behavior: contain;
+}
+
 .paleta::backdrop {
   background: rgba(0, 0, 0, 0.55);
 }
@@ -962,8 +982,10 @@ a {
   font-size: 1.05rem;
 }
 
+/* No quito el contorno sin poner otra cosa: el borde de abajo pasa al color de acento */
 .paleta-campo:focus-visible {
   outline: none;
+  border-bottom: 2px solid var(--acento);
 }
 
 .paleta-lista {
@@ -1026,6 +1048,42 @@ a {
   .nav-buscar kbd {
     display: none;
   }
+}
+
+/* ---------- Estados al pasar el ratón (solo con ratón de verdad, no en pantallas táctiles) ---------- */
+@media (hover: hover) and (pointer: fine) {
+  .boton:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--acento) 85%, var(--tinta));
+  }
+
+  .boton-icono:hover,
+  .idioma:hover:not([aria-pressed='true']) {
+    background: var(--superficie);
+    color: var(--tinta);
+  }
+
+  .nota-borrar:hover {
+    background: var(--fondo);
+  }
+}
+
+.aviso-deshacer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--superficie);
+  font-size: 0.92rem;
+}
+
+.aviso-deshacer .enlace {
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  color: var(--tinta);
+  font-weight: 700;
 }
 
 /* ---------- Pie ---------- */

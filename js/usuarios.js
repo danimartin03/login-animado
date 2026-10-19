@@ -336,6 +336,21 @@ async function borrarNota(usuarioId, notaId) {
   return { ok: true };
 }
 
+// Para deshacer un borrado: vuelvo a guardar la nota tal cual era. Compruebo que es de este usuario
+// (y que tiene la forma de una nota) para que nadie pueda colar notas ajenas por aquí.
+async function restaurarNota(usuarioId, nota) {
+  if (!nota || nota.usuarioId !== usuarioId || typeof nota.id !== 'string' || typeof nota.texto !== 'string') return { ok: false, error: 'NO_EXISTE' };
+  const actuales = await listarPorIndice('notas', 'usuarioId', usuarioId);
+  if (actuales.length >= MAXIMO_NOTAS) return { ok: false, error: 'DEMASIADAS_NOTAS' };
+  try {
+    await anadirObjeto('notas', nota);
+  } catch (fallo) {
+    if (fallo.codigo === 'EXISTE') return { ok: false, error: 'EXISTE' };
+    throw fallo;
+  }
+  return { ok: true, nota: nota };
+}
+
 function resumirNotas(notas) {
   const hechas = notas.filter(function (nota) { return nota.hecha; }).length;
   return { total: notas.length, hechas: hechas, pendientes: notas.length - hechas };
